@@ -105,6 +105,10 @@ h2.serif{font-size:clamp(32px,5vw,60px);line-height:1.08;max-width:18ch}
 .sel-bar{margin-top:26px;display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;padding:20px 24px;border:1px dashed var(--mint-deep);border-radius:6px}
 .sel-bar .t{font-size:11px;color:var(--ink-faint)}
 .sel-bar #selLine{margin-top:4px;font-size:16px;color:var(--ink)}
+.add .p{display:inline-block;margin-top:12px;font-style:normal;font-size:12px;color:var(--mint-deep)}
+.tot{text-align:right}
+.tot .t{font-size:11px;color:var(--ink-faint)}
+.tot b{display:block;font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:52px;line-height:1;color:var(--ink)}
 .note{margin-top:14px;font-size:13px;color:var(--ink-faint)}
 .final{text-align:center;padding-bottom:min(18vh,160px)}
 .final .eyebrow{justify-content:center}
@@ -195,15 +199,16 @@ footer .fm .logo{height:22px}
     <h2 class="serif reveal">Add to your shoot day.</h2>
     <p class="lede reveal">Switch on anything you would like captured while we are already on site.</p>
     <div class="adds reveal">
-      <label class="add"><input type="checkbox" data-name="Testimonial videos"><span class="box"></span><span><b>Testimonial videos</b><small>Real voices on camera, filmed during your shoot.</small></span></label>
-      <label class="add"><input type="checkbox" data-name="Matterport scan"><span class="box"></span><span><b>Matterport scan</b><small>A 3D walkthrough scan of your space, captured on shoot day.</small></span></label>
-      <label class="add"><input type="checkbox" data-name="Real estate style HDR photos"><span class="box"></span><span><b>Real estate style HDR photos</b><small>Bright, even photos of your space, blended in HDR.</small></span></label>
+      <label class="add"><input type="checkbox" data-price="125" data-name="Testimonial videos"><span class="box"></span><span><b>Testimonial videos</b><small>Real voices on camera, filmed during your shoot.</small><em class="p mono">+$125</em></span></label>
+      <label class="add"><input type="checkbox" data-price="125" data-name="Matterport scan"><span class="box"></span><span><b>Matterport scan</b><small>A 3D walkthrough scan of your space, captured on shoot day.</small><em class="p mono">+$125</em></span></label>
+      <label class="add"><input type="checkbox" data-price="125" data-name="Real estate style HDR photos"><span class="box"></span><span><b>Real estate style HDR photos</b><small>Bright, even photos of your space, blended in HDR.</small><em class="p mono">+$125</em></span></label>
     </div>
     <div class="sel-bar reveal">
       <div><div class="t mono">Your selection</div><div id="selLine" aria-live="polite">No additions selected</div></div>
+      <div class="tot"><div class="t mono">Total</div><b id="total">$600</b></div>
       <a class="btn solid" id="sendSel" href="mailto:tonyvprod@gmail.com?subject=Sid%20-%20Complete%20Content%20Package">Send my selection</a>
     </div>
-    <p class="note">Additions are priced separately. Send your selection and Tony will confirm the cost.</p>
+    <p class="note">Each day-of addition is $125 and is added to your $600 package.</p>
 
     <div class="one reveal" style="margin-top:72px">
       <p>One package.</p>
@@ -253,10 +258,11 @@ footer .fm .logo{height:22px}
 
   var boxes = document.querySelectorAll('.add input'), line = document.getElementById('selLine'), links = [document.getElementById('sendSel'), document.getElementById('msgTony')];
   function calc(){
-    var picks = [];
-    boxes.forEach(function(b){ if(b.checked) picks.push(b.dataset.name); });
-    line.textContent = picks.length ? picks.join(', ') : 'No additions selected';
-    var body = 'The Complete Content Package: $600\nDay-of additions: ' + (picks.length ? picks.join(', ') : 'none');
+    var names = [], t = 600;
+    boxes.forEach(function(b){ if(b.checked){ names.push(b.dataset.name + ' ($' + b.dataset.price + ')'); t += Number(b.dataset.price); } });
+    line.textContent = names.length ? names.map(function(n){ return n.split(' ($')[0]; }).join(', ') : 'No additions selected';
+    document.getElementById('total').textContent = '$' + t;
+    var body = 'The Complete Content Package: $600\nDay-of additions: ' + (names.length ? names.join(', ') : 'none') + '\nTotal: $' + t;
     var href = 'mailto:tonyvprod@gmail.com?subject=' + encodeURIComponent('Sid - Complete Content Package') + '&body=' + encodeURIComponent(body);
     links.forEach(function(a){ a.href = href; });
   }
